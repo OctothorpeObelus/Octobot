@@ -40,7 +40,7 @@ function vox() {
 
 function getMember(guild, identifier) {
     identifier = identifier.toLowerCase()
-    return guild.members.find(x => x.id === identifier || x.user.username.toLowerCase().includes(identifier) || ((x.nickname !== null) ? x.nickname.toLowerCase().includes(identifier) : false))
+    return guild.members.find(x => x.id === identifier || x.displayName.toLowerCase().includes(identifier))
 }
 
 client.on("ready", () => {
@@ -170,7 +170,7 @@ client.on("message", async message => {
 	if (command == "find") {
         let findargs = message.content.substring(6)
 		try {
-			message.channel.send(getMember(message.guild, findargs).displayname)
+			message.channel.send(getMember(message.guild, findargs).displayName)
 		} catch(err) {
 			message.channel.send('Internal error: ' + err.message)
 		}
