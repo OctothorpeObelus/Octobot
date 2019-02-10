@@ -49,6 +49,7 @@ client.on("ready", () => {
 });
 
 client.on("message", async message => {
+	try {
     if(message.channel.type == "dm") return;
     if(message.author.bot) return;
     
@@ -167,10 +168,10 @@ client.on("message", async message => {
 	if (message.guild.id != "385997609229352970") {
 	
 	if (command == "find") {
-        let findargs = message.content.split(" ")
+        let findargs = message.content.substring(6)
         console.log(findargs)
 		try {
-			message.channel.send(getMember(message.guild.id, findargs[1]))
+			message.channel.send(getMember(message.guild, findargs[1]))
 		} catch(err) {
 			message.channel.send('Internal error: ' + err.message)
 		}
@@ -186,8 +187,12 @@ client.on("message", async message => {
 	}
   
 	if (command == "8") {
+		try {
 		let ballchoice = ballchoices[Math.round(Math.random()*15)+1]
-		message.channel.send(ballchoice);
+			message.channel.send(ballchoice);
+		} catch(err) {
+			message.channel.send("Internal error: " + err)
+		}
 	}
   
     if (command == "ping") {
@@ -492,7 +497,9 @@ client.on("message", async message => {
 		message.channel.send(message.content.substring(5));
 		message.delete();
 	}
-	
+	} catch(err) {
+		message.channel.send('Internal error: ' + err)
+	}
 });
 
 client.login(config.token);
