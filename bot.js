@@ -7,6 +7,10 @@ const config = require("./config.json");
 
 const Jimp = require('jimp');
 
+const http = require('http')
+
+const https	= require('https')
+
 let wavFileInfo = require('wav-file-info');
 
 const si = require('systeminformation');
@@ -123,7 +127,7 @@ client.on("message", async message => {
 		
 		if (message.guild.id == "385997609229352970" | message.author.id == config.creator) {
 			if (command == "poll") {
-				pollargs = message.content.split("(")
+				let pollargs = message.content.split("(")
 				console.log(pollargs)
 				let pollout = "";
 				
@@ -155,9 +159,14 @@ client.on("message", async message => {
 				],
 				timestamp: new Date()
 			}})
-			.then(function (poll) {
-				for (let i=2;i<pollargs.length;i++) {
-					if (i=2) {poll.react("522256096631586832")}
+			.then(function (message) {
+				//for (let i=2;i<pollargs.length+2;i++) {
+					//if (i=2) {poll.react("545749638683164678")}
+				//}
+				try {
+					message.react("1️⃣")
+				} catch(err) {
+					message.channel.send("Internal error: " + err.message)
 				}
             })
 			message.delete()
@@ -496,6 +505,43 @@ client.on("message", async message => {
 		message.channel.send(message.content.substring(5));
 		message.delete();
 	}
+	
+	if (command == "meme") {
+		let data = ''
+		let args = JSON.stringify({Tag: message.content.substring(6)})
+		let options = {
+			hostname: 'api.memes.fyi',
+			path: '/Videos/Random',
+			method: 'POST',
+			header: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(args)
+			}
+		}
+		
+		let req = https.request(options, res => {
+			res.setEncoding('utf8')
+			res.on('data', x => data += x)
+			res.on('end', () => {
+				data = JSON.parse(data)
+				if (data.Status === 200) {
+					let niceURL = `https://memes.fyi/v/${data.Data.Key}`
+					message.channel.send(`Here's a spicy ${(message.content.substring(6) != null) ? `${message.content.substring(6)} ` : ''}meme, uploaded by ${data.Data.Username}.\n${niceURL}`)
+				} else {
+					message.channel.send(`${data.StatusMessage} (${data.Status})`)
+				}
+			})
+		})
+
+		req.on('error', err => message.channel.send(txt.err_no_connection))
+		req.write(args)
+		req.end()
+	}
+	
+	if (command == "memetags") {
+		message.channel.send("https://dank.memes.fyi/Tags")
+	}
+	
 	} catch(err) {
 		message.channel.send('Internal error: ' + err)
 	}
