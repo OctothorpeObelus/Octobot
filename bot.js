@@ -21,7 +21,7 @@ let chance = require('./chance.js');
 
 for(i in ops) ops[i] = parseInt(ops[i]);
 
-const commands = ["info", "op", "deop", "restart", "delete", "8", "ping"]
+const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)"]
 // Arrays and such that need constant
 const ballchoices = ["It is certain", "It is decidedly so", "Without a doubt", "Yes - defintitely", "You may rely on it", "As I see it, yes", "Most Likely", "Outlook good", "Yes.", "Signs point to yes", "Don't count on it bud", "Nae", "My totally unbiased sources say no", "Outlook not so good", "Very Doubtful", "Reply is hazy, but my best guess says no"];
 
@@ -44,7 +44,7 @@ function vox() {
 
 function getMember(guild, identifier) {
     identifier = identifier.toLowerCase()
-    return guild.members.find(x => x.id === identifier || x.displayName.toLowerCase().includes(identifier))
+    return guild.members.find(x => x.id === identifier || x.user.username.toLowerCase().includes(identifier) || ((x.nickname !== null) ? x.nickname.toLowerCase().includes(identifier) : false))
 }
 
 client.on("ready", () => {
@@ -186,12 +186,23 @@ client.on("message", async message => {
     }
 	
 	if (command == "info") {
-		let info = "Commands:\n```\n"
+		let info = ""
 		for (let i=0;i<commands.length;i++) {
 			info += config.prefix + commands[i] + "\n"
 		}
-		info += "```"
-		message.channel.send(info)
+		message.channel.send({embed: {
+			color: 0xff0000,
+			author: {
+				name: message.author.username,
+				icon_url: message.author.avatarURL
+			},
+			title: "",
+			fields: [{
+				name: "Commands",
+				value: `${info}`
+			}],
+			timestamp: new Date()
+		}});
 	}
   
 	if (command == "8") {
