@@ -19,9 +19,12 @@ let ops = fs.readFileSync("./ops.list").toString().split("\n");
 
 let chance = require('./chance.js');
 
+const audioconcat = require('audioconcat')
+
 for(i in ops) ops[i] = parseInt(ops[i]);
 
-const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)"]
+const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)", "find (partial/full nickname/username)"]
+const vcmands = ["vox (query)", "leave", "pizzatime"]
 // Arrays and such that need constant
 const ballchoices = ["It is certain", "It is decidedly so", "Without a doubt", "Yes - defintitely", "You may rely on it", "As I see it, yes", "Most Likely", "Outlook good", "Yes.", "Signs point to yes", "Don't count on it bud", "Nae", "My totally unbiased sources say no", "Outlook not so good", "Very Doubtful", "Reply is hazy, but my best guess says no"];
 
@@ -34,12 +37,26 @@ function findUser(key) {
 	return key;
 }
 
-function vox() {
-    dispatcher = voiceConnection.playFile('./vox/' + voxargs.shift() + '.wav');
-    if(voxargs.length > 0) {
-        dispatcher.on("end", () => vox());
-    }
-    return;
+function voxrun() {
+	
+	for (let i = 0; i<voxargs.lenth;i++) {
+		voxargs[i] = voxargs[i] + ".wav"
+	}
+
+	audioconcat(voxargs)
+		.concat('./vox/lastvox.mp3')
+		.on('start', function (command) {
+			console.log('ffmpeg process started:', command)
+	})
+	.on('error', function (err, stdout, stderr) {
+		console.error('Error:', err)
+		console.error('ffmpeg stderr:', stderr)
+	})
+	.on('end', function (output) {
+		console.error('Audio created in:', output)
+	})
+	dispatcher = voiceConnection.playFile('./vox/lastvox.mp3');
+	return;
 }
 
 function getMember(guild, identifier) {
@@ -190,6 +207,8 @@ client.on("message", async message => {
 		for (let i=0;i<commands.length;i++) {
 			info += config.prefix + commands[i] + "\n"
 		}
+		let vcinfo = ""
+		for (let i=0;i<vcmands.length;i++){vcinfo+=config.prefix+vcmands[i]+"\n"}
 		message.channel.send({embed: {
 			color: 0xff0000,
 			author: {
@@ -198,9 +217,14 @@ client.on("message", async message => {
 			},
 			title: "",
 			fields: [{
-				name: "Commands",
+				name: "Text Commands",
 				value: `${info}`
-			}],
+			},
+			{
+				name: "Voice Chat Commands",
+				value: `${vcinfo}`
+			}
+			],
 			timestamp: new Date()
 		}});
 	}
@@ -344,10 +368,12 @@ client.on("message", async message => {
 	}
 	
 	if (command == "vox") {
-		let voxargs = message.content.split(" ")
-		let vox = 1
+		var voxargs = message.content.split(" ")
+		for (let i=0;i<voxargs.length;i++){voxargs[i]=voxargs[i].toLowerCase()}
+		var vox = 1
 		console.log(voxargs)
-		let channelList = message.guild.channels.array();
+		var channelList = message.guild.channels.array();
+		var files = fs.readdirSync('./vox/');
 		for(let i = 0; i < channelList.length; i += 1) {
 			if(channelList[i].type == "voice") {
 				userList = channelList[i].members.array();
@@ -356,7 +382,32 @@ client.on("message", async message => {
 						voiceChannel = channelList[i];
 						channelList[i].join().then(connection => {
 							voiceConnection = connection;
-							vox()
+							//voxrun();
+							voxargs.shift();
+							for (let i = 0; i<voxargs.length;i++) {
+								console.log(voxargs[i]+".mp3")
+								if (!files.includes(voxargs[i] + ".mp3")) {
+									voxargs[i] = "./vox/sil.mp3"
+								} else {
+									voxargs[i] = "./vox/" + voxargs[i] + ".mp3"
+								}
+							}
+							voxargs.push("./vox/sil.mp3")
+							audioconcat(voxargs)
+								.concat('./vox/lastvox.mp3')
+								.on('start', function (command) {
+									console.log('ffmpeg process started:', command)
+							})
+							.on('error', function (err, stdout, stderr) {
+								console.error('Error:', err)
+								console.error('ffmpeg stderr:', stderr)
+							})
+							.on('end', function (output) {
+								console.error('Audio created in:', output)
+								dispatcher = voiceConnection.playFile('./vox/lastvox.mp3');
+							})
+							
+							return;
 						}).catch(console.error);
 						return;
 					}
@@ -551,6 +602,18 @@ client.on("message", async message => {
 	
 	if (command == "memetags") {
 		message.channel.send("https://dank.memes.fyi/Tags")
+	}
+	
+	if (command == "soulsteal") {
+		message.channel.send({embed: {
+							 color: 0xff0000,
+							 author: {
+								 name: message.author.username,
+								 icon_url: message.author.avatarURL
+							 },
+							 image: { url: "https://cdn.discordapp.com/attachments/466322280541323264/547627460318068737/SOULEATER1.gif"},
+							 title: "soulsteal",
+						 }});
 	}
 	
 	} catch(err) {
