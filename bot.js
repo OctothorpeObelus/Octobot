@@ -1,32 +1,24 @@
-const Discord = require("discord.js");
-const fs = require("fs");
-
-const client = new Discord.Client();
-
-const config = require("./config.json");
-
-const Jimp = require('jimp');
-
-const http = require('http')
-
-const https	= require('https')
-
-let wavFileInfo = require('wav-file-info');
-
-const si = require('systeminformation');
-
-let ops = fs.readFileSync("./ops.list").toString().split("\n");
-
-let chance = require('./chance.js');
-
-const audioconcat = require('audioconcat')
+const Discord = 	require("discord.js");
+const fs = 		require("fs");
+const client = 		new Discord.Client();
+const config = 		require("./config.json");
+const Jimp = 		require('jimp');
+const http = 		require('http')
+const https = 		require('https')
+const audioconcat = 	require('audioconcat')
+let wavFileInfo = 	require('wav-file-info');
+const si = 		require('systeminformation');
+let ops = 		fs.readFileSync("./ops.list").toString().split("\n");
+let chance = 		require('./chance.js');
 
 for(i in ops) ops[i] = parseInt(ops[i]);
 
 const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)", "find (partial/full nickname/username)"]
 const vcmands = ["vox (query)", "leave", "pizzatime"]
-// Arrays and such that need constant
+
+// Arrays and such that need constant //
 const ballchoices = ["It is certain", "It is decidedly so", "Without a doubt", "Yes - defintitely", "You may rely on it", "As I see it, yes", "Most Likely", "Outlook good", "Yes.", "Signs point to yes", "Don't count on it bud", "Nae", "My totally unbiased sources say no", "Outlook not so good", "Very Doubtful", "Reply is hazy, but my best guess says no"];
+///////////////////////////////////////
 
 let voiceChannel;
 let voiceConnection;
