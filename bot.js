@@ -1,24 +1,33 @@
-const Discord = 	require("discord.js");
-const fs = 		require("fs");
-const client = 		new Discord.Client();
-const config = 		require("./config.json");
-const Jimp = 		require('jimp');
-const http = 		require('http')
-const https = 		require('https')
-const audioconcat = 	require('audioconcat')
-let wavFileInfo = 	require('wav-file-info');
-const si = 		require('systeminformation');
-let ops = 		fs.readFileSync("./ops.list").toString().split("\n");
-let chance = 		require('./chance.js');
+const Discord = require("discord.js");
+const fs = require("fs");
+
+const client = new Discord.Client();
+
+const config = require("./config.json");
+const subnetting = require("./subnetting.js");
+
+const Jimp = require('jimp');
+
+const http = require('http')
+
+const https	= require('https')
+
+let wavFileInfo = require('wav-file-info');
+
+const si = require('systeminformation');
+
+let ops = fs.readFileSync("./ops.list").toString().split("\n");
+
+let chance = require('./chance.js');
+
+const audioconcat = require('audioconcat')
 
 for(i in ops) ops[i] = parseInt(ops[i]);
 
 const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)", "find (partial/full nickname/username)"]
 const vcmands = ["vox (query)", "leave", "pizzatime"]
-
-// Arrays and such that need constant //
+// Arrays and such that need constant
 const ballchoices = ["It is certain", "It is decidedly so", "Without a doubt", "Yes - defintitely", "You may rely on it", "As I see it, yes", "Most Likely", "Outlook good", "Yes.", "Signs point to yes", "Don't count on it bud", "Nae", "My totally unbiased sources say no", "Outlook not so good", "Very Doubtful", "Reply is hazy, but my best guess says no"];
-///////////////////////////////////////
 
 let voiceChannel;
 let voiceConnection;
@@ -363,7 +372,6 @@ client.on("message", async message => {
 		var voxargs = message.content.split(" ")
 		for (let i=0;i<voxargs.length;i++){voxargs[i]=voxargs[i].toLowerCase()}
 		var vox = 1
-		console.log(voxargs)
 		var channelList = message.guild.channels.array();
 		var files = fs.readdirSync('./vox/');
 		for(let i = 0; i < channelList.length; i += 1) {
@@ -374,7 +382,6 @@ client.on("message", async message => {
 						voiceChannel = channelList[i];
 						channelList[i].join().then(connection => {
 							voiceConnection = connection;
-							//voxrun();
 							voxargs.shift();
 							for (let i = 0; i<voxargs.length;i++) {
 								console.log(voxargs[i]+".mp3")
@@ -606,6 +613,15 @@ client.on("message", async message => {
 							 image: { url: "https://cdn.discordapp.com/attachments/466322280541323264/547627460318068737/SOULEATER1.gif"},
 							 title: "soulsteal",
 						 }});
+	}
+	
+	if (command == "subnet") {
+		let args = message.content.split(" ")
+        subnetting.subnettable(args[1])
+            .then(() => {
+                message.channel.send(subnetting.subnetinfo(args[1]), { file: "subnet_table.csv" });
+                //message.channel.send("", { file: "subnet_table.csv" });
+            });
 	}
 	
 	} catch(err) {
