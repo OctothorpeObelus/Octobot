@@ -60,7 +60,7 @@ exports.subnettable = async function (hosts) {
     }
 
 
-    csvWriter.writeRecords(tableout)
+    await csvWriter.writeRecords(tableout)
         .then(() => {
             console.log('[Subnetting Table] The CSV file was written successfully')
         });
