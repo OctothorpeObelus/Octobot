@@ -631,11 +631,14 @@ client.on("message", async message => {
 
         if (command == "subnet") {
             let args = message.content.split(" ")
-            subnetting.subnettable(args[1])
-                .then(() => {
-                    message.channel.send(subnetting.subnetinfo(args[1]), { file: "subnet_table.csv" });
-                    //message.channel.send("", { file: "subnet_table.csv" });
-                });
+
+            if (args[1] > 2 && !isNaN(args[1]) && args[1] <= 2147483648) {
+                subnetting.subnettable(args[1])
+                    .then(() => {
+                        message.channel.send(subnetting.subnetinfo(args[1]), { file: "subnet_table.csv" });
+                        //message.channel.send("", { file: "subnet_table.csv" });
+                    });
+            } else { message.channel.send("Request denied, query was not a number or number was out of range") }
         }
 
     } catch (err) {
