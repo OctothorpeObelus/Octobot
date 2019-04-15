@@ -446,7 +446,8 @@ client.on("message", async message => {
                     for (let i = 0; i < voxargs.length; i++) {
                         console.log(voxargs[i] + ".mp3")
                         if (!files.includes(voxargs[i] + ".mp3")) {
-                            voxargs[i] = "./vox/sil.mp3"
+                            voxargs.splice(i, 1)
+                            i--
                         } else {
                             voxargs[i] = "./vox/" + voxargs[i] + ".mp3"
                         }
