@@ -24,7 +24,7 @@ const audioconcat = require('audioconcat')
 
 for (i in ops) ops[i] = parseInt(ops[i]);
 
-const commands = ["info", "op", "deop", "restart", "delete", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)", "find (partial/full nickname/username)", "subnet (number of hosts)"]
+const commands = ["info", "op [mention] (op only)", "deop [mention] (op only)", "restart (op only)", "delete (op only)", "purge [int] (op only)", "8", "ping", "meme (tag)", "memetags", "trump (url/user mention)", "wall (url/user mention)", "find (partial/full nickname/username)", "subnet (number of hosts)"]
 const vcmands = ["vox (query)", "leave", "pizzatime"]
 // Arrays and such that need constant
 const ballchoices = ["It is certain", "It is decidedly so", "Without a doubt", "Yes - defintitely", "You may rely on it", "As I see it, yes", "Most Likely", "Outlook good", "Yes.", "Signs point to yes", "Don't count on it bud", "Nae", "My totally unbiased sources say no", "Outlook not so good", "Very Doubtful", "Reply is hazy, but my best guess says no"];
