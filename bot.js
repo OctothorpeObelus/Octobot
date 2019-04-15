@@ -394,6 +394,7 @@ client.on("message", async message => {
             }
 
             if (command == "vox") {
+                let flag = 0
                 var voxargs = message.content.split(" ")
                 for (let i = 0; i < voxargs.length; i++) { voxargs[i] = voxargs[i].toLowerCase() }
                 var vox = 1
@@ -417,6 +418,7 @@ client.on("message", async message => {
                                         }
                                     }
                                     voxargs.push("./vox/sil.mp3")
+                                    flag = 1
                                     audioconcat(voxargs)
                                         .concat('./vox/lastvox.mp3')
                                         .on('start', function (command) {
@@ -438,12 +440,35 @@ client.on("message", async message => {
                         }
                     }
                 }
+                if (!flag) {
+                    console.log("[$vox] No VC found for " + message.author.username + ", uploading file to chat instead.")
+                    voxargs.shift();
+                    for (let i = 0; i < voxargs.length; i++) {
+                        console.log(voxargs[i] + ".mp3")
+                        if (!files.includes(voxargs[i] + ".mp3")) {
+                            voxargs[i] = "./vox/sil.mp3"
+                        } else {
+                            voxargs[i] = "./vox/" + voxargs[i] + ".mp3"
+                        }
+                    }
+                    await audioconcat(voxargs)
+                        .concat('./vox/lastvox.mp3')
+                        .on('start', function (command) {
+                            console.log('ffmpeg process started:', command)
+                        })
+                        .on('error', function (err, stdout, stderr) {
+                            console.error('Error:', err)
+                            console.error('ffmpeg stderr:', stderr)
+                        })
+                        .on('end', function (output) {
+                            console.error('Audio created in:', output)
+                            message.channel.send({ file: './vox/lastvox.mp3' })
+                        })
+                }
             }
 
             if (command == "leave") {
                 voiceChannel.leave();
-                clear();
-                clearInterval(nextRef);
                 console.log("Left the channel");
             }
 
