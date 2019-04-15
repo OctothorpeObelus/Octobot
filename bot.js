@@ -138,6 +138,7 @@ client.on("message", async message => {
 
             if (command === "purge") {
                 if (args[0]) {
+                    let sender = message.author.username
                     let k = parseInt(args[0]) + 1
                     if (k) {
                         if (k > 100) k = 100;
@@ -148,7 +149,7 @@ client.on("message", async message => {
                                     arr[i].delete();
                                     num += 1;
                             }
-                            console.log("Deleted " + (num-1) + " messages.");
+                            console.log("Deleted " + (num-1) + " messages. Command issued by " + sender);
                         });
                     }
                 }
