@@ -136,6 +136,24 @@ client.on("message", async message => {
                 }
             }
 
+            if (command === "purge") {
+                if (args[0]) {
+                    let k = parseInt(args[0]) + 1
+                    if (k) {
+                        if (k > 100) k = 100;
+                        message.channel.fetchMessages({ limit: k }).then(function (res) {
+                            arr = res.array()
+                            let num = 0;
+                            for (i in arr) {
+                                    arr[i].delete();
+                                    num += 1;
+                            }
+                            console.log("Deleted " + (num-1) + " messages.");
+                        });
+                    }
+                }
+            }
+
             if (command === "restart") {
                 m = await message.channel.send("Restarting!");
                 process.exit();
