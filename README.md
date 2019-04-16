@@ -3,7 +3,7 @@
 ## Current Commands
 Click on a link to view more info and help on the command
 
-[$info](https://github.com/OctothorpeObelus/Octobot/wiki/$info)<br>
+[$info]($info)<br>
 [$op](https://github.com/OctothorpeObelus/Octobot/wiki/$op) [mention] (op only)<br>
 [$deop](https://github.com/OctothorpeObelus/Octobot/wiki/$deop) [mention] (op only)<br>
 [$restart](https://github.com/OctothorpeObelus/Octobot/wiki/$restart) (op only)<br>
