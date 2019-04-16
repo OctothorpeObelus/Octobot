@@ -1,6 +1,7 @@
+const Jimp = require('jimp');
+
 if (trumpargs.length < 2 | trumpargs.length > 2) {
-    message.channel.send("You must mention a user");
-    return;
+    return "You must mention a user";
 } else if (trumpargs[1].substring(0, 4) == "http") {
     console.log("[CMD LOG] $trump, used url");
     const trumpurl = await message.channel.send("Processing...");
@@ -14,21 +15,7 @@ if (trumpargs.length < 2 | trumpargs.length > 2) {
         data[2].resize(Jimp.AUTO, 760)
         data[0].composite(data[2], -(data[2].bitmap.width / 2) + 406, 94)
         data[0].composite(data[1], 0, 0)
-        data[0].write("images/generated/trumped.png", function () {
-            message.channel.send({
-                embed: {
-                    color: 0xff0000,
-                    author: {
-                        name: message.author.username,
-                        icon_url: message.author.avatarURL
-                    },
-                    title: "Generated Trump image",
-                    timestamp: new Date()
-                }
-            });
-            message.channel.send("", { file: "images/generated/trumped.png" });
-            trumpurl.delete();
-        })
+        data[0].write("images/generated/trumped.png")
     })
     .catch(err => {
         throw err;
@@ -47,21 +34,7 @@ if (trumpargs.length < 2 | trumpargs.length > 2) {
             data[2].resize(760, 760)
             data[0].composite(data[2], 55, 94)
             data[0].composite(data[1], 0, 0)
-            data[0].write("images/generated/trumped.png", function () {
-                message.channel.send({
-                    embed: {
-                        color: 0xff0000,
-                        author: {
-                            name: message.author.username,
-                            icon_url: message.author.avatarURL
-                        },
-                        title: "Generated Trump image",
-                        timestamp: new Date()
-                    }
-                });
-                message.channel.send({ file: 'images/generated/trumped.png' })
-                trump.delete();
-            })
+            data[0].write("images/generated/trumped.png")
         })
         .catch(err => {
             throw err;
