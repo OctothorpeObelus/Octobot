@@ -46,15 +46,16 @@ exports.subnettable = async function (hosts) {
         fs.unlinkSync('./subnet_table.csv')
     } catch (err) { console.log(err) }
 
-    let sn = 0; var tableout = [];
+    let sn = 0; var tableout = []; let loop = 0;
     for (let i = 0; i < mn * subnets; i++) {
         if (i == 0 | i % mn === 0) {
             tableout.push({
-                sn: (sn + 1),
+                sn: (netclass=="C")?(sn + 1):((loop/255)+ "." + (sn+1)),
                 gw: i,
                 us: (mn * sn + 1) + "-" + (mn * sn + mn - 2),
                 br: (mn * sn + mn - 1)
             })
+            if (i > 255-loop) {loop = loop+255}
             sn++
         }
     }
