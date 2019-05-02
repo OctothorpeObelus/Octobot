@@ -80,14 +80,18 @@ exports.mariotext = function(text, message) {
     .catch(err => {console.log(err)})
 }
 
-exports.ahshit = function(user, message) {
-    let jimps = ['images/carl_frg.png',  (message.mentions.users.first(1)[0].id != -1)?message.mentions.users.first(1)[0].avatarURL:message.server.members.get("name", user).avatarURL]
+exports.ahshit = function(message) {
+    let jimps = []
+    if ( message.attachments) {
+        jimps = ['images/carl_frg.png', message.attachments.array()[0].url]
+    } else {
+        jimps = ['images/carl_frg.png', message.content.split(" ")[1]]
+    }
     let jimped = [Jimp.read(jimps[0]),Jimp.read(jimps[1])]
     
     Promise.all(jimped).then(function(data) {return Promise.all(jimped)})
     .then(function(data) {
-        data[2].resize(256, 256)
-        data[0].composite(data[2], 55, 94)
+        data[1].resize(256, 256) //Resize to foreground resolution
         data[0].composite(data[1], 0, 0)
         data[0].write("images/generated/ahshit.png")
     })
