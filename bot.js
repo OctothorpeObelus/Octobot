@@ -627,7 +627,12 @@ client.on("message", async message => {
                     });
             } else { message.channel.send("Request denied, query was not a number or number was out of range") }
         }
-
+        
+        if (command == "ahshit") {
+            await images.ahshit(message)
+            message.channel.send({file: "./generated/ahshit.png"})
+        }
+        
     } catch (err) {
         message.channel.send('Internal error: ' + err)
     }
