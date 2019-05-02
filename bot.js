@@ -74,7 +74,12 @@ client.on("ready", () => {
 client.on("message", async message => {
     try {
         if (message.channel.type == "dm") return;
-        if (message.author.bot) return;
+        //if (message.author.bot) return;
+        
+        if (message.guild.id == 427943354316357641 && message.channel.id == 540169251261120524 && message.author.id == 407903863778312196) {
+            console.log("Message retrieved")
+            console.log(message.content)
+        }
 
         const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
